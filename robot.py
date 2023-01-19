@@ -4,7 +4,8 @@ import commands2.button as button
 import commands2
 
 from subsystems.drive import DriveSubsystem
-from commands import DriveCommand, TurnCommand
+from subsystems.snatch import SnatchSubsystem
+from commands import DriveCommand, TurnCommand, RaiseSnatchCommand, LowerSnatchCommand, ToggleSnatchCommand
 
 # This is the main robot class.
 class RobotDriveDemo(wpilib.TimedRobot):
@@ -18,9 +19,13 @@ class RobotDriveDemo(wpilib.TimedRobot):
         self.drive = DriveSubsystem(4, 2, 1, 3)
         self.controller = button.CommandXboxController(0)
 
+        self.snatch = SnatchSubsystem()
+
         self.drive.setDefaultCommand(DriveCommand(self.drive, self.controller))
         
         self.controller.X().onTrue(TurnCommand(self.drive, 90))
+
+        self.controller.leftBumper().onTrue(ToggleSnatchCommand(self.snatch))
 
     def robotPeriodic(self) -> None:
         # This is what allows us to actually run the commands. You will almost 
