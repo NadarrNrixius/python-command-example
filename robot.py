@@ -5,7 +5,7 @@ import commands2
 
 from subsystems.drive import DriveSubsystem
 from subsystems.snatch import SnatchSubsystem
-from commands import DriveCommand, TurnCommand, RaiseSnatchCommand, LowerSnatchCommand, ToggleSnatchCommand
+from commands import DriveCommand, TurnCommand, ToggleSnatchCommand
 
 # This is the main robot class.
 class RobotDriveDemo(wpilib.TimedRobot):
