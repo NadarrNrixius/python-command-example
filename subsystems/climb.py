@@ -2,21 +2,19 @@ import wpilib
 import commands2
 from wpilib import DoubleSolenoid
 
-import ctre
 
-class SnatchSubsystem(commands2.SubsystemBase):
-    
+
+class ClimbSubsystem(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 
-        self._pistons = DoubleSolenoid(moduleType=wpilib.PneumaticsModuleType.CTREPCM,forwardChannel=3, reverseChannel=4)
-        self._motor = ctre.WPI_TalonFX(5)
+        self._pistons = DoubleSolenoid(moduleType=wpilib.PneumaticsModuleType.CTREPCM, forwardChannel=0, reverseChannel=7)
 
         self.extended = False
 
         self._pistons.set(DoubleSolenoid.Value.kReverse)
 
-
+    
 
     def togglePistons(self):
         if self.extended:
@@ -25,9 +23,3 @@ class SnatchSubsystem(commands2.SubsystemBase):
         else:
             self._pistons.set(DoubleSolenoid.Value.kForward)
             self.extended = True
-        
-    def startMotor(self):
-        self._motor.set(0.5)
-    
-    def stopMotor(self):
-        self._motor.set(0.0)

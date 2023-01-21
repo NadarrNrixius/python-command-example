@@ -15,9 +15,13 @@ class ToggleSnatchCommand(commands2.CommandBase):
 
     def initialize(self):
         self.snatch_subsystem.togglePistons()
+        
 
     def execute(self):
-        pass
+        if self.snatch_subsystem.extended:
+            self.snatch_subsystem.startMotor()
+        else:
+            self.snatch_subsystem.stopMotor()
 
     def end(self, interrupted: bool):
         pass
