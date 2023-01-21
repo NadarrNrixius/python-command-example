@@ -10,11 +10,12 @@ class SnatchSubsystem(commands2.SubsystemBase):
         super().__init__()
 
         self._pistons = DoubleSolenoid(moduleType=wpilib.PneumaticsModuleType.CTREPCM,forwardChannel=3, reverseChannel=4)
-        self._motor = ctre.WPI_TalonFX(5)
+        self._motor = ctre.WPI_VictorSPX(5)
 
         self.extended = False
 
         self._pistons.set(DoubleSolenoid.Value.kReverse)
+        self._motor.setInverted(True)
 
 
 
