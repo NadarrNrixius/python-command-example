@@ -10,23 +10,15 @@ class SnatchSubsystem(commands2.SubsystemBase):
 
         self._pistons = DoubleSolenoid(moduleType=wpilib.PneumaticsModuleType.CTREPCM,forwardChannel=3, reverseChannel=4)
         
-        self.toggle_state = False
+        self.extended = False
 
         self._pistons.set(DoubleSolenoid.Value.kReverse)
 
-    def lowerPistons(self):
-        
-        self._pistons.set(DoubleSolenoid.Value.kForward)
-
-    def raisePistons(self):
-        
-        self._pistons.set(DoubleSolenoid.Value.kReverse)
-    
     def togglePistons(self):
 
-        if self.toggle_state:
+        if self.extended:
             self._pistons.set(DoubleSolenoid.Value.kReverse)
-            self.toggle_state = False
+            self.extended = False
         else:
             self._pistons.set(DoubleSolenoid.Value.kForward)
-            self.toggle_state = True
+            self.extended = True
