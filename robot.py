@@ -6,7 +6,9 @@ import commands2
 from subsystems.drive import DriveSubsystem
 from subsystems.snatch import SnatchSubsystem
 from subsystems.climb import ClimbSubsystem
-from commands import DriveCommand, TurnCommand, ToggleSnatchCommand, ToggleClimbCommand
+from subsystems.ammo import AmmoSubsystem
+from subsystems.shooter import ShooterSubsystem
+from commands import DriveCommand, TurnCommand, ToggleSnatchCommand, ToggleClimbCommand, AmmoCommand, ShooterCommand
 
 # This is the main robot class.
 class RobotDriveDemo(wpilib.TimedRobot):
@@ -18,18 +20,21 @@ class RobotDriveDemo(wpilib.TimedRobot):
         # Ideally, all of these will wrap all of the hardware on the robot, and we won't need
         # to declare anything else here (however, there could be a reason, just probably not a good one).
         self.drive = DriveSubsystem(4, 2, 1, 3)
-        self.controller = button.CommandXboxController(0)
-
         self.snatch = SnatchSubsystem()
         self.climb = ClimbSubsystem()
+        self.ammo = AmmoSubsystem()
+        self.shooter = ShooterSubsystem()
+
+        self.controller = button.CommandXboxController(0)
 
         self.drive.setDefaultCommand(DriveCommand(self.drive, self.controller))
+        self.ammo.setDefaultCommand(AmmoCommand(self.ammo))
         
         self.controller.X().onTrue(TurnCommand(self.drive, 90))
-
         self.controller.leftBumper().onTrue(ToggleSnatchCommand(self.snatch))
-
         self.controller.rightBumper().onTrue(ToggleClimbCommand(self.climb))
+        self.controller.rightTrigger().onTrue(ShooterCommand(self.shooter))
+    
 
     def robotPeriodic(self) -> None:
         # This is what allows us to actually run the commands. You will almost 
