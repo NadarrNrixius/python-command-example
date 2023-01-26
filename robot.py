@@ -8,7 +8,7 @@ from subsystems.snatch import SnatchSubsystem
 from subsystems.climb import ClimbSubsystem
 from subsystems.ammo import AmmoSubsystem
 from subsystems.shooter import ShooterSubsystem
-from commands import DriveCommand, TurnCommand, ToggleSnatchCommand, ToggleClimbCommand, AmmoCommand, ShooterCommand
+from commands import DriveCommand, TurnCommand, ToggleSnatchCommand, ToggleClimbCommand, AmmoCommand, ShooterCommand, DriveForCommand
 
 # This is the main robot class.
 class RobotDriveDemo(wpilib.TimedRobot):
@@ -28,13 +28,15 @@ class RobotDriveDemo(wpilib.TimedRobot):
         self.controller = button.CommandXboxController(0)
 
         self.drive.setDefaultCommand(DriveCommand(self.drive, self.controller))
-        self.ammo.setDefaultCommand(AmmoCommand(self.ammo))
+        #self.ammo.setDefaultCommand(AmmoCommand(self.ammo))
         
         self.controller.X().onTrue(TurnCommand(self.drive, 90))
         self.controller.leftBumper().onTrue(ToggleSnatchCommand(self.snatch))
         self.controller.rightBumper().onTrue(ToggleClimbCommand(self.climb))
-        self.controller.rightTrigger().onTrue(ShooterCommand(self.shooter))
-    
+        self.controller.rightTrigger().onTrue(ShooterCommand(self.shooter, self.ammo))
+        self.controller.leftTrigger().onTrue(DriveForCommand(self.drive, 2.0))
+
+        self.autonomous_commands = commands2.SequentialCommandGroup()
 
     def robotPeriodic(self) -> None:
         # This is what allows us to actually run the commands. You will almost 
@@ -45,7 +47,17 @@ class RobotDriveDemo(wpilib.TimedRobot):
 
     def autonomousInit(self) -> None:
         # We'll use this to set the autonomous command on the actual robot.
-        pass
+
+        self.autonomous_commands = commands2.SequentialCommandGroup(commands=[
+            #TurnCommand(self.drive, 90),
+            ToggleSnatchCommand(self.snatch),
+            DriveForCommand(self.drive, 2.5),
+            ToggleSnatchCommand(self.snatch),
+            #TurnCommand(self.drive, 180),
+            ShooterCommand(self.shooter, self.ammo)
+        ])
+
+        self.autonomous_commands.schedule()
 
     def autonomousPeriodic(self) -> None:
         # We rarely do anything with this function.
@@ -53,7 +65,7 @@ class RobotDriveDemo(wpilib.TimedRobot):
 
     def teleopInit(self) -> None:
         # Mostly used to stop the autonomous command, if it's still running.
-        pass
+        self.autonomous_commands.cancel()
 
     def teleopPeriodic(self) -> None:
         # You'll never use this. All TeleOp behaviours should be registered 
